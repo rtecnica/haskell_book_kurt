@@ -1,5 +1,5 @@
-messyMain :: IO ()
-messyMain = do
+main :: IO ()
+main = do
   print "Who is the email for?"
   recipient <- getLine
   print "What is the Title?"
