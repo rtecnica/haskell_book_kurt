@@ -1,13 +1,3 @@
-import Text.Printf (IsChar (toChar))
-
-main :: IO ()
-main = do
-  print "gimme a number"
-  number <- getLine
-  print number
-
--- TODO: Check how to print this shit
-
 -- Q2.2
 inc x = x + 1
 
