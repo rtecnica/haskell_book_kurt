@@ -1,7 +1,13 @@
-robot (name, attack, hp) = \message -> message (name, attack, hp)
+type Robot = (String, Int, Int)  
 
+robot :: Robot -> (Robot -> t) -> t
+robot botStats = \message -> message botStats
+
+name :: Robot -> String
 name (n,_,_) = n
+attack :: Robot -> Int
 attack (_,a,_) = a
+hp :: Robot -> Int
 hp (_,_,hp) = hp
 
 getName aRobot = aRobot name
@@ -24,11 +30,11 @@ fight aRobot defender = damage defender attack
             then getAttack aRobot
             else 0
 
+getHPs :: [(Robot -> Int) -> Int] -> [Int]
 getHPs = map getHP
 
 nRoundsFightSim fastRobot slowRobot rounds =
     if rounds  == 0
         then (fastRobot, slowRobot)
     else
-         (fastRobot, slowRobot)
-        --nRoundsFightSim (fight fastRobot slowRobot) (fight slowRobot fastRobot) (rounds - 1)
+        nRoundsFightSim (fight fastRobot slowRobot) (fight slowRobot fastRobot) (rounds - 1)

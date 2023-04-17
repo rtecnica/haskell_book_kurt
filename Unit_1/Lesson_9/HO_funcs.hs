@@ -1,4 +1,4 @@
-import Data.Char
+import Data.Char ( toLower )
 -- Q9.1 Use 'filter' and 'length' to recreate elem
 myElem item list = 
     length (filter (item ==) list) >= 1
