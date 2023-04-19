@@ -90,6 +90,8 @@ instance Cipher OneTimePad where
 prng :: Int -> Int -> Int -> Int -> Int
 prng a b maxNumber seed = (a*seed + b) `mod` maxNumber
 
+-- Extended Exercise
+
 myPrng :: Int -> Int
 myPrng = prng (div maxChar 1234) 4321 maxChar 
     where maxChar = ord (maxBound :: Char)
