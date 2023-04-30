@@ -1,6 +1,3 @@
-import Control.Monad
-import System.Environment
-
 main :: IO ()
 main = do
   userInput <- getContents
