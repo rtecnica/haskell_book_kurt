@@ -11,11 +11,10 @@ main = do
   mapM_ (print . printExpr . parsExpr) (split userInput)
 
 data Expr = Expr
-  { args :: (Int, Int),
+  { args :: (Double, Double),
     operator :: Operator
   }
 
--- Motherfucking lazy split
 split :: String -> [String]
 split [] = [""]
 split (c : cs)
@@ -24,16 +23,10 @@ split (c : cs)
   where
     rest = split cs
 
-collectLine :: String -> String
-collectLine (x : xs) =
-  if x == '\n'
-    then ""
-    else x : collectLine xs
-
 xorBool :: Bool -> Bool -> Bool
 xorBool value1 value2 = (value1 || value2) && not (value1 && value2)
 
-evalExpr :: Expr -> Int
+evalExpr :: Expr -> Double
 evalExpr (Expr args operator) = case operator of
   Sum -> firstarg + secondarg
   Prod -> firstarg * secondarg
