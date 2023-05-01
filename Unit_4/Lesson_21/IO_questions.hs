@@ -1,4 +1,3 @@
-import Control.Arrow (Arrow (first))
 import Data.Map qualified as Map
 
 -- Q21.1

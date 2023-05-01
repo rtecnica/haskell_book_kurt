@@ -11,4 +11,5 @@ main :: IO ()
 main = do
   userInput <- TIO.getContents
   let numbers = toInts userInput
+  print "Sum:"
   print (sum numbers)

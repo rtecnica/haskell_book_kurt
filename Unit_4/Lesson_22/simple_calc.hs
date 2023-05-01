@@ -1,4 +1,5 @@
 import Data.Text (pack, splitOn, strip, unpack)
+import Data.Text.Lazy qualified as TL
 
 -- Q22.1
 -- Write a program, simple_calc.hs, that reads simple equations involving adding
