@@ -8,7 +8,7 @@ main = do
     args <- getArgs
     let fileName = head args
     imageFile <- BC.readFile fileName
-    let glitched = imageFile
+    glitched <- randomReplaceByte imageFile
     let glitchedFileName = mconcat ["glitched_",fileName]
     BC.writeFile glitchedFileName glitched
     print "all done"
