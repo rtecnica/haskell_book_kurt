@@ -1,3 +1,9 @@
+import qualified Data.Map as Map
+import Data.Text.Lazy qualified as T
+import Data.Text.Lazy.IO qualified as TIO
+import Text.Read qualified as TR
+import qualified GHC.IO.Device as T
+
 -- QC27.1
 reverseMaybe :: Maybe String -> Maybe String
 -- reverseMaybe Nothing = Nothing
@@ -61,3 +67,44 @@ renderHtml part =
     partDesc = description part
     partCost = show (cost part)
     partCount = show (count part)
+
+
+partsDB :: Map.Map Int RobotPart
+partsDB = Map.fromList keyVals
+  where keys = [1,2,3]
+        vals = [leftArm,rightArm,robotHead]
+        keyVals = zip keys vals
+
+allParts :: [RobotPart]
+allParts = map snd (Map.toList partsDB)
+
+allPartsHtml :: [Html]
+allPartsHtml = renderHtml <$> allParts
+
+partVal :: Maybe RobotPart
+partVal = Map.lookup 1 partsDB
+
+partHtml :: Maybe Html
+partHtml = renderHtml <$> partVal
+
+-- Q27.3
+main :: IO ()
+main = do
+  input <- TIO.getContents
+  let lines = map (TR.readMaybe . T.unpack)  (T.lines input)
+  mapM_ (myIOprint . parse . func) lines
+
+
+func :: Maybe Int -> Maybe Double
+func Nothing = Nothing
+func (Just i) = cost <$> Map.lookup i partsDB
+
+parse :: Maybe Double -> String
+parse (Just a) = show a
+parse Nothing = ""
+
+myIOprint :: String -> IO ()
+myIOprint string = do
+  if string == ""
+    then return ()
+    else print string
