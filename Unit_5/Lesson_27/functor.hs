@@ -1,8 +1,8 @@
-import qualified Data.Map as Map
+import Data.Map qualified as Map
 import Data.Text.Lazy qualified as T
 import Data.Text.Lazy.IO qualified as TIO
+import GHC.IO.Device qualified as T
 import Text.Read qualified as TR
-import qualified GHC.IO.Device as T
 
 -- QC27.1
 reverseMaybe :: Maybe String -> Maybe String
@@ -68,12 +68,12 @@ renderHtml part =
     partCost = show (cost part)
     partCount = show (count part)
 
-
 partsDB :: Map.Map Int RobotPart
 partsDB = Map.fromList keyVals
-  where keys = [1,2,3]
-        vals = [leftArm,rightArm,robotHead]
-        keyVals = zip keys vals
+  where
+    keys = [1, 2, 3]
+    vals = [leftArm, rightArm, robotHead]
+    keyVals = zip keys vals
 
 allParts :: [RobotPart]
 allParts = map snd (Map.toList partsDB)
@@ -91,9 +91,8 @@ partHtml = renderHtml <$> partVal
 main :: IO ()
 main = do
   input <- TIO.getContents
-  let lines = map (TR.readMaybe . T.unpack)  (T.lines input)
+  let lines = map (TR.readMaybe . T.unpack) (T.lines input)
   mapM_ (myIOprint . parse . func) lines
-
 
 func :: Maybe Int -> Maybe Double
 func Nothing = Nothing
