@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 import Data.Map qualified as Map
 import Data.Text.Lazy qualified as T
 import Data.Text.Lazy.IO qualified as TIO
@@ -76,8 +77,8 @@ partsDB = Map.fromList keyVals
 allParts :: [RobotPart]
 allParts = map snd (Map.toList partsDB)
 
-partVal :: Maybe RobotPart
-partVal = Map.lookup 1 partsDB
+partVal :: Int -> Maybe RobotPart
+partVal = flip Map.lookup partsDB
 
 -- Q28.3
 -- Make a command-line application that has a database of various RobotParts (at least five),
@@ -88,24 +89,33 @@ main :: IO ()
 main = do
   print "Enter two part numbers:"
   input <- TIO.getContents
-  let lines = (T.lines input)
-  mapM_ (myIOprint . minCost . parse) lines
+  let lines = T.lines input
+  mapM_ (myIOprint . maybeMinCost . parse) lines
 
-minCost :: [Int] -> String
-minCost list =
-    if length list /= 2
-        then ""
-        else  
+maybeMinCost :: Maybe [Int] -> Maybe String
+maybeMinCost Nothing = Nothing
+maybeMinCost (Just list) = minCost <$> partVal (head list) <*> partVal (list !! 1)
+
+minCost :: RobotPart -> RobotPart -> String
+minCost firstItem secondItem = case compare firstCost secondCost of
+  GT -> show firstItem
+  LT -> show secondItem
+  EQ -> show firstItem ++ "\n" ++ show secondItem
+  where
+    firstCost = cost firstItem
+    secondCost = cost secondItem
 
 parse :: T.Text -> Maybe [Int]
-parse line = if length split /= 2
+parse line =
+  if length split /= 2
     then Nothing
     else Just (map (read . T.unpack) split)
-        where split = map T.strip (T.splitOn " " line)
+  where
+    split = map T.strip (T.splitOn " " line)
 
 myIOprint :: Maybe String -> IO ()
-myIOprint Nothing = return ()
-myIOprint Just string = do
-  if string == "" 
+myIOprint Nothing = print "Nonexistant Parts, try again..."
+myIOprint (Just string) = do
+  if string == ""
     then return ()
-    else print string
+    else putStrLn string
