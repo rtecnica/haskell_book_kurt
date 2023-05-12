@@ -56,12 +56,11 @@ lookupGamerId id = Map.lookup id gamerIdDB
 creditsFromWCId :: WillCoId -> Maybe PlayerCredits
 creditsFromWCId id = lookupGamerId id >>= lookupUserName >>= lookupCredits
 
-
 -- class Applicative m => Monad (m :: * -> *) where
-    -- (>>=) :: m a -> (a -> m b) -> m b
-    -- (>>) :: m a -> m b -> m b
-    -- return :: a -> m a
-    -- fail :: String -> m a
+-- (>>=) :: m a -> (a -> m b) -> m b
+-- (>>) :: m a -> m b -> m b
+-- return :: a -> m a
+-- fail :: String -> m a
 
 -- QC30.4
 ioNum :: Num a => a -> IO a
@@ -82,14 +81,13 @@ allFmapM f m = m >>= (\a -> return (f a))
 -- required by the Monad type class (and lambda functions). To get you started, here’s
 -- your type signature:
 allApp :: Monad m => m (a -> b) -> m a -> m b
-allApp func val = func >>= (\f -> val >>= (\x -> return (f x)) )
+allApp func val = func >>= (\f -> val >>= (\x -> return (f x)))
 
--- m (a -> b) -> ((a -> b) -> m (a -> b)) -> m (a -> b)
+-- m (a -> b) -> ((a -> b) -> m b) -> mb
 
 -- This question is much trickier than the last one. Two hints:
 --  Try to think exclusively in terms of the type signatures.
 --  Use <$> if you want and replace it with your answer to Q29.1
-
 
 -- Q30.3 Implement a bind function which is the same as (>>=) for Maybe:
 bind :: Maybe a -> (a -> Maybe b) -> Maybe b
