@@ -70,7 +70,7 @@ _hinq selectQuery joinQuery whereQuery =
     (whereQuery joinData)
     ) joinQuery
 
-data HINQ m a b = HINQ (m a -> m b) (m a) (m a -> m a) | HINQ_ (m a -> m b) (m a)
+data HINQ m a b = HINQ (m a -> m b) (m a) (m a -> m a) | HINQ_ (m a -> m b) (m a) | HINQ_EMPTY
 
 runHINQ :: (Monad m, Alternative m) => HINQ m a b -> m b
 runHINQ (HINQ sClause jClause wClause) = _hinq sClause jClause wClause
@@ -141,3 +141,16 @@ englishStudents = runHINQ englishStudentsQ
 -- have to refactor your HINQ type to include the empty query. If you can define Monoid for
 -- HINQ, you can concatenate a list of HINQ queries into a single query!
 
+instance Semigroup (HINQ m a b) where
+    (<>) (HINQ a b c) HINQ_EMPTY = HINQ a b c
+    (<>) (HINQ_ a b) HINQ_EMPTY = HINQ_ a b
+    (<>) HINQ_EMPTY (HINQ a b c) = HINQ a b c
+    (<>) HINQ_EMPTY (HINQ_ a b) = HINQ_ a b
+
+
+instance Monoid (HINQ m a b) where
+  mempty :: HINQ m a b
+  mempty = HINQ_EMPTY
+
+  mappend :: HINQ m a b -> HINQ m a b -> HINQ m a b
+  mappend = (<>)
