@@ -198,6 +198,7 @@ performCommand command
   | command == "users" = printUsers >> main
   | command == "tools" = printTools >> main
   | command == "adduser" = promptAndAddUser >> main
+  | command == "addtool" = promptAndAddTool >> main
   | command == "checkout" = promptAndCheckout >> main
   | command == "checkin" = promptAndCheckin >> main
   | command == "in" = printAvailable >> main
@@ -207,5 +208,20 @@ performCommand command
 
 -- Q41.1 Create an IO action named addTool, like addUser, to add a tool to the database.
 
+addTool :: String -> String -> IO ()
+addTool toolName toolDesc = withConn "tools.db" $
+  \conn -> do
+    execute conn "INSERT INTO tools (name, description, lastReturned, timesBorrowed) VALUES (?,?,'2017-01-01',0)" (toolName, toolDesc)
+    print "user added"
+
 -- Q41.2 Add an addtool command that prompts the user for information and then adds
 -- the tool by using the addTool action from the preceding question.
+
+promptAndAddTool :: IO ()
+promptAndAddTool = do
+  print "Enter new tool name"
+  toolName <- getLine
+  print "Enter new tool description"
+  toolDesc <- getLine
+  addTool toolName toolDesc
+
