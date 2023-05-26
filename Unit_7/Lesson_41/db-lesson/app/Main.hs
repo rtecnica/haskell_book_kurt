@@ -204,3 +204,8 @@ performCommand command
   | command == "out" = printCheckedout >> main
   | command == "quit" = print "bye!"
   | otherwise = print "Sorry command not found" >> main
+
+-- Q41.1 Create an IO action named addTool, like addUser, to add a tool to the database.
+
+-- Q41.2 Add an addtool command that prompts the user for information and then adds
+-- the tool by using the addTool action from the preceding question.
