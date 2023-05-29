@@ -1,12 +1,15 @@
-import Data.Array.ST
-import Data.Array.Unboxed
 import Control.Monad
 import Control.Monad.ST
+import Data.Array.ST
+import Data.Array.Unboxed
+import Data.Bifunctor (bimap)
+import Data.Array.Base (UArray(UArray))
+import Control.Arrow (Arrow(arr))
 
 listToSTUArray :: [Int] -> ST s (STUArray s Int Int)
 listToSTUArray vals = do
   let end = length vals - 1
-  stArray <- newArray (0,end) 0
+  stArray <- newArray (0, end) 0
   forM_ [0 .. end] $ \i -> do
     let val = vals !! i
     writeArray stArray i val
@@ -40,8 +43,26 @@ bubbleSort myArray = runSTUArray $ do
 -- Implement crossover where the result is a UArray but the crossover itself is performed
 -- using STUArrays.
 
-
+crossOver :: UArray Int Bool -> UArray Int Bool -> Int -> UArray Int Bool
+crossOver arr1 arr2 cutoff = runSTUArray $ do 
+  stArr1 <- thaw arr1 
+  let end1 = (snd . bounds) arr1
+  forM_ [cutoff .. end1] $ \i -> do
+    let val1 = arr2 ! i
+    writeArray stArr1 i val1
+  return stArr1
 
 -- Q42.2 Write a function that takes a UArray Int Int as an input. The input will have a
 -- mixture of zeros and other values. The function, replaceZeros, should return the array
 -- with all of the zeros replaced with the value –1.
+
+replaceZeros :: UArray Int Int -> UArray Int Int
+replaceZeros arr = runSTUArray $ do
+  stArr <- thaw arr
+  let end = (snd . bounds) arr
+  let bgn = (fst . bounds) arr
+  forM_ [bgn .. end] $ \i -> do
+    let item = arr ! i  
+    when (item == 0) $ do
+      writeArray stArr i (-1)
+  return stArr
